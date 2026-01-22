@@ -1,19 +1,22 @@
 # polymarket market depth chart
 
 ## Websocket market channel api
-To do a market depth chart, you will need to use the *websocket market channel* api (documented [here](https://docs.polymarket.com/developers/CLOB/websocket/market-channel). To use it, you need to know the token id that you're interested in.
+To do a market depth chart, you will need to use the **websocket market channel** api (documented [here](https://docs.polymarket.com/developers/CLOB/websocket/market-channel). To use it, you need to know the token id that you're interested in.
 
 ## Events data API
-To get the token_id for the market you're interested in, you need to use the *events* API specifically, the **get event by slug** endpoint, which is documented [here](https://docs.polymarket.com/api-reference/events/get-event-by-slug)
+To get the token_id for the market you're interested in, you need to use the **events** API specifically, the *get event by slug* endpoint, which is documented [here](https://docs.polymarket.com/api-reference/events/get-event-by-slug)
 
 ## What's the slug? How do I get a slug?
-The slug is a human readable identification string for the market you're interested in. For bitcoin up-down 15 min, it's formatted like this: btc-updown-15m-<timestamp>. If you want to work on a different market, you can go find it on polymarket manually, and copy the end of the url. (E.g: https://polymarket.com/event/btc-updown-15m-1765748700 notice the end bit with the btc...). Note that an **event** can have multiple **markets**. Each **market** has a token pair, one token for the positive outcome and a token for the negative outcome.
+The slug is a human readable identification string for the market you're interested in. For bitcoin up-down 15 min, it's formatted like this: `btc-updown-15m-<timestamp>`. If you want to work on a different market, you can go find it on polymarket manually, and copy the end of the url. (E.g: https://polymarket.com/event/btc-updown-15m-1765748700 notice the end bit with the btc...). Note that an *event* can have multiple *markets*. Each *market* has a *token pair*, one token for the positive outcome and a token for the negative outcome.
 
 ## What's a timestamp? how do I make a timestamp?
 to get the *timestamp* for the ongoing market, you need a little bit of computer science history. Back in the days, they needed to standardise the representation of time. Someone said: let's count the seconds since Jan 1st 1970. They (practically) all said yes. Midnight of Jan 1st 1970 is known as Unix time. history lesson over. The timestamp in the slug is the start time of the market, in seconds since unix time. I will give you the opportunity to experience the joy of programming in the pre-chatgpt era, by not telling you how to get the timestamp in python. You're allowed to google though. If you give up see below:
 <details>
+  
 <summary>click here if you're gay</summary>
+  
 - import the datetime library (part of the python standard library so already installed on your computer)
+  
 - create a new datetime object that represents the time now using this function:
 ```python
 right_now = datetime.datetime.now()
@@ -22,11 +25,14 @@ right_now = datetime.datetime.now()
 ``` python
 timestamp = right_now().timestamp()
 ```
+
 - realise that python gives you the timestamp as a floating point number which is useless for your use case, so convert it to an integer
 ``` python
 timestamp = int(right_now().timestamp())
 ```
+
 </details>
+
 Note that each market starts a o'clock, quarter past, half past, quarter to. That means the timestamp should be a multiple of 15 minutes * 60 seconds = 900. I'll let you figure otu the math to floor your timestamp to the previous multiple of 900 to get the start time of the ongoing market
 
 ## Ok i have a timestamp now
